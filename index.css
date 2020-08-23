@@ -1,0 +1,63 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+#container {
+    line-height: 0;
+    white-space: nowrap;
+}
+
+.panel {
+    background-color: orangered;
+    display: inline-block;
+    height: 200px;
+    overflow: hidden;
+    transition-timing-function: ease-in-out;
+    transition: width 0.5s, height 0.5s, left 0.5s, top 0.5s;
+    white-space: nowrap;
+    width: 200px;
+}
+
+.panel > .details {
+    display: none;
+}
+
+.zoomed > .details {
+    display: block;
+}
+
+.panel > .details {
+    bottom: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    left: 0;
+    overflow: hidden;
+    padding: 1.0rem;
+    position: absolute;
+}
+
+.panel > .details > .author::before {
+    content: "By: ";
+}
+
+.panel > .details > .author {
+
+}
+
+.panel > .details > .description {
+    margin-top: 1.0rem;
+}
+
+.panel > .image {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.panel > .image > img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.panel > .details > .title {
+    font-size: 3.0rem;
+}
