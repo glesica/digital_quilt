@@ -91,7 +91,9 @@ class Quilt {
         };
     }
 
-    addPanel(element: HTMLDivElement): void {
+    addPanel(element: HTMLDivElement, options: {
+        allowFocus: boolean,
+    }): void {
         element.addEventListener("mousedown", (e: MouseEvent) => {
             this.isDraggingOrClicking = true;
             e.preventDefault();
@@ -115,10 +117,12 @@ class Quilt {
             }
 
             if (!this.didDrag) {
-                if (this.focusedElement !== null) {
-                    this.defocusPanel();
+                if (options.allowFocus) {
+                    if (this.focusedElement !== null) {
+                        this.defocusPanel();
+                    }
+                    this.focusPanel(element);
                 }
-                this.focusPanel(element);
             }
 
             this.didDrag = false;
@@ -127,6 +131,10 @@ class Quilt {
 
         element.classList.add("panel");
         element.classList.add(`panel-${this.panelCount}`);
+
+        if (options.allowFocus) {
+            element.classList.add("fixed");
+        }
 
         element.style.height = `${this.currentPanelSize}px`;
         element.style.width = `${this.currentPanelSize}px`;
@@ -299,5 +307,5 @@ for (let i = 0; i < (25 * 25); i++) {
         title: "Fake Image",
     });
     element.style.backgroundColor = randomColor();
-    quilt.addPanel(element);
+    quilt.addPanel(element, {allowFocus: true});
 }
