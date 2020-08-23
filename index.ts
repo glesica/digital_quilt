@@ -7,10 +7,6 @@
 class Quilt {
     private classPrefix: string;
 
-    private cloneHeight: number = 600;
-
-    private cloneWidth: number = 600;
-
     private readonly container: HTMLElement;
 
     private focusedElement?: HTMLDivElement = null;
@@ -29,6 +25,8 @@ class Quilt {
 
         this.classPrefix = options.classPrefix;
         this.panelsPerRow = options.panelsPerRow;
+
+        window.addEventListener("resize", this.layoutFocusedPanel.bind(this));
     }
 
     static fixedPanelOffsets(
@@ -103,25 +101,31 @@ class Quilt {
         });
 
         document.body.append(clone);
-
-        setTimeout(() => {
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-
-            const leftOffset = 0.5 * (viewportWidth - this.cloneWidth);
-            const topOffset = 0.5 * (viewportHeight - this.cloneHeight);
-
-            clone.style.left = `${leftOffset}px`;
-            clone.style.top = `${topOffset}px`;
-            clone.style.width = `${this.cloneWidth}px`;
-            clone.style.height = `${this.cloneHeight}px`;
-
-            const cloneClasses = clone.classList;
-            cloneClasses.add("zoomed");
-        }, 20);
-
         this.focusedElement = clone;
         this.originalElement = element;
+
+        setTimeout(this.layoutFocusedPanel.bind(this), 20);
+    }
+
+    layoutFocusedPanel(): void {
+        const clone = this.focusedElement;
+
+        const viewportHeight = window.innerHeight;
+        const viewportWidth = window.innerWidth;
+
+        const smallerDim = Math.min(viewportHeight, viewportWidth);
+        const cloneSize = smallerDim - smallerDim * 0.1;
+
+        const leftOffset = 0.5 * (viewportWidth - cloneSize);
+        const topOffset = 0.5 * (viewportHeight - cloneSize);
+
+        clone.style.left = `${leftOffset}px`;
+        clone.style.top = `${topOffset}px`;
+        clone.style.width = `${cloneSize}px`;
+        clone.style.height = `${cloneSize}px`;
+
+        const cloneClasses = clone.classList;
+        cloneClasses.add("zoomed");
     }
 }
 
