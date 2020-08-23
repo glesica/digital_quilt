@@ -9,9 +9,13 @@ class Quilt {
 
     private readonly container: HTMLElement;
 
+    private didDrag: boolean = false;
+
     private focusedElement?: HTMLDivElement = null;
 
     private originalElement?: HTMLDivElement = null;
+
+    private isDraggingOrClicking: boolean = false;
 
     private panelCount: number = 0;
 
@@ -47,11 +51,37 @@ class Quilt {
     }
 
     addPanel(element: HTMLDivElement): void {
-        element.addEventListener("click", (e: MouseEvent) => {
-            if (this.focusedElement !== null) {
+        element.addEventListener("mousedown", (e: MouseEvent) => {
+            this.isDraggingOrClicking = true;
+            e.preventDefault();
+        });
+
+        element.addEventListener("mousemove", (e: MouseEvent) => {
+            if (!this.isDraggingOrClicking) {
                 return;
             }
-            this.focusPanel(element);
+
+            this.didDrag = true;
+            window.scrollBy({
+                left: -e.movementX,
+                top: -e.movementY,
+            });
+        });
+
+        element.addEventListener("mouseup", (e: MouseEvent) => {
+            if (!this.isDraggingOrClicking) {
+                return;
+            }
+
+            if (!this.didDrag) {
+                if (this.focusedElement !== null) {
+                    this.defocusPanel();
+                }
+                this.focusPanel(element);
+            }
+
+            this.didDrag = false;
+            this.isDraggingOrClicking = false;
         });
 
         element.classList.add("panel");
@@ -100,6 +130,18 @@ class Quilt {
             this.defocusPanel();
         });
 
+        clone.addEventListener("mousemove", (e: MouseEvent) => {
+            if (!this.isDraggingOrClicking) {
+                return;
+            }
+
+            this.didDrag = true;
+            window.scrollBy({
+                left: -e.movementX,
+                top: -e.movementY,
+            });
+        });
+
         document.body.append(clone);
         this.focusedElement = clone;
         this.originalElement = element;
@@ -128,6 +170,8 @@ class Quilt {
         cloneClasses.add("zoomed");
     }
 }
+
+// TODO: Everything below goes in "main"
 
 function randomColor() {
     const letters = '0123456789ABCDEF';
