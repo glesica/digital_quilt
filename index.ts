@@ -55,7 +55,7 @@ class Quilt {
         });
 
         element.classList.add("panel");
-        element.classList.add(`${this.panelCount}`);
+        element.classList.add(`panel-${this.panelCount}`);
 
         this.container.append(element);
         this.panelCount++;
