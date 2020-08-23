@@ -5,9 +5,13 @@
  * about the panel.
  */
 class Quilt {
+    private readonly basePanelSize: number;
+
     private classPrefix: string;
 
     private readonly container: HTMLElement;
+
+    private currentPanelSize: number;
 
     private didDrag: boolean = false;
 
@@ -21,18 +25,55 @@ class Quilt {
 
     private readonly panelsPerRow: number;
 
+    private zoomLevel: number = 1;
+
     constructor(container: HTMLElement, options: {
+        basePanelSize: number,
         classPrefix: string,
         panelsPerRow: number,
     }) {
         this.container = container;
 
+        this.basePanelSize = options.basePanelSize * this.zoomLevel;
+        this.currentPanelSize = this.basePanelSize;
         this.classPrefix = options.classPrefix;
         this.panelsPerRow = options.panelsPerRow;
 
         window.addEventListener("resize", this.layoutFocusedPanel.bind(this));
+        window.addEventListener("keypress", (e: KeyboardEvent) => {
+            // All keyboard shortcuts start with "ctrl"
+            if (!e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
+                return;
+            }
+
+            if (e.key === "i") {
+                this.zoom(0.1);
+            }
+
+            if (e.key === "o") {
+                this.zoom(-0.1);
+            }
+
+            if (e.key === "p") {
+                this.resetZoom();
+            }
+        });
     }
 
+    /**
+     * A function to do the math for where the focused panel should
+     * start and end its zoom-in and zoom-out animations, respectively.
+     *
+     * The calculation is a bit complicated because we use
+     * `position: fixed` on the focused panel, which means that its
+     * position is computed relative to the viewport, whereas the
+     * unfocused panel positions are relative to the document.
+     *
+     * `container` is the DOM element into which the quilt is mounted,
+     * usually the window itself.
+     *
+     * `element` is the original (unfocused) panel DOM element.
+     */
     static fixedPanelOffsets(
         container: { scrollX: number, scrollY: number },
         element: { offsetLeft: number, offsetTop: number })
@@ -87,6 +128,9 @@ class Quilt {
         element.classList.add("panel");
         element.classList.add(`panel-${this.panelCount}`);
 
+        element.style.height = `${this.currentPanelSize}px`;
+        element.style.width = `${this.currentPanelSize}px`;
+
         this.container.append(element);
         this.panelCount++;
 
@@ -106,8 +150,8 @@ class Quilt {
 
         clone.style.left = `${offsets.x}px`;
         clone.style.top = `${offsets.y}px`;
-        clone.style.width = "";
-        clone.style.height = "";
+        clone.style.width = `${this.currentPanelSize}px`;
+        clone.style.height = `${this.currentPanelSize}px`;
 
         this.focusedElement = null;
         this.originalElement = null;
@@ -149,8 +193,17 @@ class Quilt {
         setTimeout(this.layoutFocusedPanel.bind(this), 20);
     }
 
+    /**
+     * Re-calculate the layout for the focused panel, if there is
+     * one, when the container size changes. In most cases the
+     * container will be the window.
+     */
     layoutFocusedPanel(): void {
         const clone = this.focusedElement;
+
+        if (clone === null) {
+            return;
+        }
 
         const viewportHeight = window.innerHeight;
         const viewportWidth = window.innerWidth;
@@ -168,6 +221,35 @@ class Quilt {
 
         const cloneClasses = clone.classList;
         cloneClasses.add("zoomed");
+    }
+
+    layoutUnfocusedPanels(): void {
+        this.currentPanelSize = this.basePanelSize * this.zoomLevel;
+
+        const panels = this.container.getElementsByClassName("panel");
+        for (let i = 0; i < panels.length; i++) {
+            const panel = panels[i] as HTMLDivElement;
+            panel.style.height = `${this.currentPanelSize}px`;
+            panel.style.width = `${this.currentPanelSize}px`;
+        }
+    }
+
+    resetZoom(): void {
+        if (this.zoomLevel === 1) {
+            return;
+        }
+
+        this.zoomLevel = 1;
+        this.layoutUnfocusedPanels();
+    }
+
+    zoom(delta: number): void {
+        const newZoomLevel = this.zoomLevel + delta;
+        if (newZoomLevel === this.zoomLevel) {
+            return;
+        }
+        this.zoomLevel = newZoomLevel;
+        this.layoutUnfocusedPanels();
     }
 }
 
@@ -204,8 +286,9 @@ function createPanel(options: {
 
 const container = document.getElementById("container");
 const quilt = new Quilt(container, {
-    panelsPerRow: 25,
+    basePanelSize: 200,
     classPrefix: "panel",
+    panelsPerRow: 25,
 });
 
 for (let i = 0; i < (25 * 25); i++) {

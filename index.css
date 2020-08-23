@@ -10,12 +10,10 @@ body {
 
 .panel {
     display: inline-block;
-    height: 200px;
     overflow: hidden;
     transition-timing-function: ease-in-out;
     transition: width 0.5s, height 0.5s, left 0.5s, top 0.5s;
     white-space: nowrap;
-    width: 200px;
 }
 
 .panel > .details {
