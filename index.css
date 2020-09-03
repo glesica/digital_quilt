@@ -12,7 +12,7 @@ body {
     display: inline-block;
     overflow: hidden;
     transition-timing-function: ease-in-out;
-    transition: width 0.5s, height 0.5s, left 0.5s, top 0.5s;
+    transition: width 1.0s, height 1.0s, left 1.0s, top 1.0s;
     white-space: nowrap;
 }
 
@@ -65,4 +65,20 @@ body {
 .panel > .details > .title {
     font-size: 1.5rem;
     font-weight: bold;
+}
+
+#header, #footer {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    text-shadow: black 1px 1px 10px;
+}
+
+#header {
+    top: 0;
+}
+
+#footer {
+    bottom: 0;
 }
