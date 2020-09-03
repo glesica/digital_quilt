@@ -37,7 +37,7 @@ const letters = [
 
 const pictures = [
     "F1",
-    "C2", "H2",
+    "C2",
     "B3", "E3", "I3", "L3",
     "G4", "K4",
     "C5", "D5", "F5",

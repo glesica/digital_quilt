@@ -44,29 +44,32 @@ export class Quilt {
         window.addEventListener("resize", this.layoutFocusedPanel.bind(this));
         window.addEventListener("keypress", (e: KeyboardEvent) => {
             // All keyboard shortcuts start with "ctrl"
-            if (!e.ctrlKey || e.metaKey || e.altKey || !e.shiftKey) {
+            if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
                 return;
             }
 
-            if (e.key === "b") {
+            if (e.key == "b" || e.key == "B") {
                 this.fitToWindow({fitBoth: true});
             }
 
-            if (e.key === "f") {
+            if (e.key == "f" || e.key == "F") {
                 this.fitToWindow({fitBoth: false});
             }
 
-            if (e.key === "i") {
+            if (e.key == "i" || e.key == "I") {
                 this.zoom(0.1);
             }
 
-            if (e.key === "o") {
+            if (e.key == "o" || e.key == "O") {
                 this.zoom(-0.1);
             }
 
-            if (e.key === "p") {
+            if (e.key == "p" || e.key == "P") {
                 this.resetZoom();
             }
+
+            e.preventDefault();
+            e.stopPropagation();
         });
 
         const uiElements = document.getElementsByClassName("ui");

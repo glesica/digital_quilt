@@ -14,11 +14,11 @@ export class AutoSelector {
 
         window.addEventListener("keypress", (e: KeyboardEvent) => {
             // All keyboard shortcuts start with "ctrl"
-            if (!e.ctrlKey || e.metaKey || e.altKey || !e.shiftKey) {
+            if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
                 return;
             }
 
-            if (e.key === "a") {
+            if (e.key == "a" || e.key == "A") {
                 if (this.running) {
                     this.stop();
                 } else {
@@ -26,13 +26,16 @@ export class AutoSelector {
                 }
             }
 
-            if (e.key === "r") {
+            if (e.key == "r" || e.key == "R") {
                 if (this.running) {
                     this.stop();
                 } else {
                     this.start({strategy: "random"});
                 }
             }
+
+            e.preventDefault();
+            e.stopPropagation();
         });
     }
 
