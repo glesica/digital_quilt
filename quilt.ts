@@ -44,7 +44,7 @@ export class Quilt {
         window.addEventListener("resize", this.layoutFocusedPanel.bind(this));
         window.addEventListener("keypress", (e: KeyboardEvent) => {
             // All keyboard shortcuts start with "ctrl"
-            if (!e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
+            if (!e.ctrlKey || e.metaKey || e.altKey || !e.shiftKey) {
                 return;
             }
 

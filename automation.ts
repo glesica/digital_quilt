@@ -14,7 +14,7 @@ export class AutoSelector {
 
         window.addEventListener("keypress", (e: KeyboardEvent) => {
             // All keyboard shortcuts start with "ctrl"
-            if (!e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
+            if (!e.ctrlKey || e.metaKey || e.altKey || !e.shiftKey) {
                 return;
             }
 
