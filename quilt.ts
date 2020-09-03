@@ -255,7 +255,7 @@ export class Quilt {
         const viewportWidth = window.innerWidth;
 
         const smallerDim = Math.min(viewportHeight, viewportWidth);
-        const cloneSize = smallerDim - smallerDim * 0.1;
+        const cloneSize = smallerDim - smallerDim * 0.2;
 
         const leftOffset = 0.5 * (viewportWidth - cloneSize);
         const topOffset = 0.5 * (viewportHeight - cloneSize);
