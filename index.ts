@@ -13,15 +13,12 @@ function randomColor() {
 }
 
 function createPanel(options: {
-    author: string,
-    description: string,
     imageUrl: string,
-    title: string,
 }): HTMLDivElement {
     const tempContainer = document.createElement("div") as HTMLDivElement;
     const htmlString = `<div>
         <div class="image">
-            <img alt="${options.title}" src="${options.imageUrl}">
+            <img alt="Panel ${options.imageUrl}" src="${options.imageUrl}">
         </div>`
     tempContainer.innerHTML = htmlString.trim();
     return tempContainer.firstChild as HTMLDivElement;
@@ -31,18 +28,38 @@ const container = document.getElementById("container");
 const quilt = new Quilt(container, {
     basePanelSize: 200,
     classPrefix: "panel",
-    panelsPerRow: 25,
+    panelsPerRow: 12,
 });
 
-for (let i = 0; i < (25 * 25); i++) {
-    const element = createPanel({
-        author: "George Lesica",
-        description: "This is a fake image",
-        imageUrl: `images/img-${i % 190}.jpg`,
-        title: "Fake Image",
-    });
-    element.style.backgroundColor = randomColor();
-    quilt.addPanel(element, {allowFocus: true});
+const letters = [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
+];
+
+const pictures = [
+    "F1",
+    "C2", "H2",
+    "B3", "E3", "I3", "L3",
+    "G4", "K4",
+    "C5", "D5", "F5",
+    "B6", "E6", "J6",
+    "E7", "G7", "J7", "K7",
+    "C8", "H8",
+    "K9",
+    "C10", "G10", "J10", "L10",
+    "E11", "H11",
+    "D12",
+];
+
+for (let j = 0; j < letters.length; j++) {
+    for (let i = 0; i < letters.length; i++) {
+        const filename = `${letters[i]}${j + 1}`;
+        const allowFocus = pictures.indexOf(filename) !== -1;
+        const element = createPanel({
+            imageUrl: `images/${filename}.jpg`,
+        });
+        element.style.backgroundColor = "white";
+        quilt.addPanel(element, {allowFocus: allowFocus});
+    }
 }
 
 new AutoSelector(quilt, {delay: 4000, strategy: "sequential"});

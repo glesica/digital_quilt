@@ -81,10 +81,16 @@ body {
 
 #header {
     top: 0;
-    font-size: 48px;
+    font-size: 40px;
 }
 
 #footer {
     bottom: 0;
-    font-size: 32px;
+    font-size: 24px;
+}
+
+#header img {
+    max-width: 75px;
+    margin-left: 15px;
+    margin-right: 15px;
 }

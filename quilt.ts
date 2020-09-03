@@ -5,6 +5,8 @@
  * about the panel.
  */
 export class Quilt {
+    private readonly allowsFocus: Map<number, boolean> = new Map<number, boolean>();
+
     private readonly basePanelSize: number;
 
     private classPrefix: string;
@@ -135,12 +137,14 @@ export class Quilt {
         element.classList.add("panel");
         element.classList.add(`panel-${this.panelCount}`);
 
-        if (options.allowFocus) {
+        if (!options.allowFocus) {
             element.classList.add("fixed");
         }
 
         element.style.height = `${this.currentPanelSize}px`;
         element.style.width = `${this.currentPanelSize}px`;
+
+        this.allowsFocus[this.panelCount] = options.allowFocus;
 
         this.container.append(element);
         this.panelCount++;
@@ -211,10 +215,17 @@ export class Quilt {
         this.layoutUnfocusedPanels();
     }
 
+    canFocus(index: number): boolean {
+        const actualIndex = index % this.panelCount;
+        return this.allowsFocus[actualIndex] === true;
+    }
+
     focusPanelByIndex(index: number): void {
         const actualIndex = index % this.panelCount;
-        const element = this.container.getElementsByClassName("panel")[actualIndex];
-        this.focusPanel(element as HTMLDivElement);
+        if (this.canFocus(actualIndex)) {
+            const element = this.container.getElementsByClassName("panel")[actualIndex];
+            this.focusPanel(element as HTMLDivElement);
+        }
     }
 
     focusPanel(element: HTMLDivElement): void {
@@ -255,7 +266,7 @@ export class Quilt {
         const viewportWidth = window.innerWidth;
 
         const smallerDim = Math.min(viewportHeight, viewportWidth);
-        const cloneSize = smallerDim - smallerDim * 0.2;
+        const cloneSize = smallerDim - smallerDim * 0.3;
 
         const leftOffset = 0.5 * (viewportWidth - cloneSize);
         const topOffset = 0.5 * (viewportHeight - cloneSize);

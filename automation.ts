@@ -40,14 +40,18 @@ export class AutoSelector {
         const panelCount = this.quilt.getPanelCount();
 
         if (this.strategy === "sequential") {
-            this.lastIndex++;
-            if (this.lastIndex >= panelCount) {
-                this.lastIndex = 0;
-            }
+            do {
+                this.lastIndex++;
+                if (this.lastIndex >= panelCount) {
+                    this.lastIndex = 0;
+                }
+            } while (!this.quilt.canFocus(this.lastIndex))
         }
 
         if (this.strategy === "random") {
-            this.lastIndex = Math.floor(Math.random() * panelCount);
+            do {
+                this.lastIndex = Math.floor(Math.random() * panelCount);
+            } while (!this.quilt.canFocus(this.lastIndex))
         }
 
         this.quilt.defocusPanel();
@@ -55,7 +59,7 @@ export class AutoSelector {
 
         setTimeout(() => {
             if (this.running) {
-                setTimeout(this.run.bind(this));
+                this.run();
             }
         }, this.delay);
     }
