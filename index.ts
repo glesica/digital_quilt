@@ -36,6 +36,9 @@ const letters = [
 ];
 
 const pictures = [
+    // Added 9/4
+    "A10", "A11", "A8", "C1", "E4", "E9", "G6", "H5", "H6", "I4", "I5", "I6", "J9", "K12", 
+    // Original
     "F1",
     "C2",
     "B3", "E3", "I3", "L3",
