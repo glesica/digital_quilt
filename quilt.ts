@@ -29,17 +29,17 @@ export class Quilt {
 
     private zoomLevel: number = 1;
 
-    constructor(container: HTMLElement, options: {
-        basePanelSize: number,
-        classPrefix: string,
-        panelsPerRow: number,
-    }) {
+    constructor(container: HTMLElement, {
+        basePanelSize = 200,
+        classPrefix = "dq",
+        panelsPerRow = 10,
+    }: QuiltConstructorParams) {
         this.container = container;
 
-        this.basePanelSize = options.basePanelSize * this.zoomLevel;
+        this.basePanelSize = basePanelSize * this.zoomLevel;
         this.currentPanelSize = this.basePanelSize;
-        this.classPrefix = options.classPrefix;
-        this.panelsPerRow = options.panelsPerRow;
+        this.classPrefix = classPrefix;
+        this.panelsPerRow = panelsPerRow;
 
         window.addEventListener("resize", this.layoutFocusedPanel.bind(this));
         window.addEventListener("keypress", (e: KeyboardEvent) => {
@@ -109,9 +109,9 @@ export class Quilt {
         };
     }
 
-    addPanel(element: HTMLDivElement, options: {
-        allowFocus: boolean,
-    }): void {
+    addPanel(panel: Panel): void {
+        const element = panel.asDomElement();
+
         element.addEventListener("mousedown", (e: MouseEvent) => {
             e.preventDefault();
             this.isDraggingOrClicking = true;
@@ -119,13 +119,13 @@ export class Quilt {
 
         element.addEventListener("mousemove", this.dragQuilt.bind(this));
 
-        element.addEventListener("mouseup", (e: MouseEvent) => {
+        element.addEventListener("mouseup", (_: MouseEvent) => {
             if (!this.isDraggingOrClicking) {
                 return;
             }
 
             if (!this.didDrag) {
-                if (options.allowFocus) {
+                if (panel.focusable) {
                     if (this.focusedElement !== null) {
                         this.defocusPanel();
                     }
@@ -140,14 +140,14 @@ export class Quilt {
         element.classList.add("panel");
         element.classList.add(`panel-${this.panelCount}`);
 
-        if (!options.allowFocus) {
+        if (!panel.focusable) {
             element.classList.add("fixed");
         }
 
         element.style.height = `${this.currentPanelSize}px`;
         element.style.width = `${this.currentPanelSize}px`;
 
-        this.allowsFocus[this.panelCount] = options.allowFocus;
+        this.allowsFocus[this.panelCount] = panel.focusable;
 
         this.container.append(element);
         this.panelCount++;
@@ -192,7 +192,7 @@ export class Quilt {
         });
     }
 
-    // TODO: Make this agnostic toward the container
+    // TODO: Make this agnostic toward the container (window or not)
     fitToWindow(options: {fitBoth: boolean}): void {
         const containerWidth = window.innerWidth;
         const containerHeight = window.innerHeight;
@@ -240,7 +240,7 @@ export class Quilt {
         clone.style.left = `${offsets.x}px`;
         clone.style.top = `${offsets.y}px`;
 
-        clone.addEventListener("click", (e: MouseEvent) => {
+        clone.addEventListener("click", (_: MouseEvent) => {
             this.defocusPanel();
         });
 
@@ -317,3 +317,8 @@ export class Quilt {
     }
 }
 
+interface QuiltConstructorParams {
+    basePanelSize?: number,
+    classPrefix?: string,
+    panelsPerRow?: number,
+}

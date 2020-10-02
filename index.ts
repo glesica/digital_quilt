@@ -3,27 +3,6 @@ import {Quilt} from "./quilt.js";
 
 // TODO: Everything below goes in "main"
 
-function randomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
-function createPanel(options: {
-    imageUrl: string,
-}): HTMLDivElement {
-    const tempContainer = document.createElement("div") as HTMLDivElement;
-    const htmlString = `<div>
-        <div class="image">
-            <img alt="Panel ${options.imageUrl}" src="${options.imageUrl}">
-        </div>`
-    tempContainer.innerHTML = htmlString.trim();
-    return tempContainer.firstChild as HTMLDivElement;
-}
-
 const container = document.getElementById("container");
 const quilt = new Quilt(container, {
     basePanelSize: 200,
@@ -31,11 +10,15 @@ const quilt = new Quilt(container, {
     panelsPerRow: 12,
 });
 
+// TODO: Stuff the image definitions into a JSON array and load it here
+
 const letters = [
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
 ];
 
 const pictures = [
+    // Added 9/9
+    "I10", "J2", "J3",
     // Missed
     "A2", " A5", "C4", "D1", "F2", "H1", "H2", "K8",
     // Added 9/4
@@ -58,12 +41,13 @@ const pictures = [
 for (let j = 0; j < letters.length; j++) {
     for (let i = 0; i < letters.length; i++) {
         const filename = `${letters[i]}${j + 1}`;
-        const allowFocus = pictures.indexOf(filename) !== -1;
-        const element = createPanel({
+        const focusable = pictures.indexOf(filename) !== -1;
+        const panel = new Panel({
+            backgroundColor: "white",
+            focusable: focusable,
             imageUrl: `images/${filename}.jpg`,
         });
-        element.style.backgroundColor = "white";
-        quilt.addPanel(element, {allowFocus: allowFocus});
+        quilt.addPanel(panel);
     }
 }
 
