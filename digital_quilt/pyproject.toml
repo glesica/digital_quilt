@@ -1,0 +1,23 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.scripts]
+digital_quilt = "digital_quilt.quilt:_main"
+
+[tool.flit.metadata]
+module = "digital_quilt"
+author = "George Lesica"
+author-email = "george@lesica.com"
+home-page = "https://github.com/glesica/digital_quilt"
+classifiers = ["License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)"]
+description-file = "README.md"
+
+[tool.flit.sdist]
+exclude = [
+    "Dockerfile*",
+    "Makefile",
+    "site/",
+    ".gitignore",
+    ".github",
+]
