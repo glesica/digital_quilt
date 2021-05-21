@@ -124,8 +124,18 @@ def _main():
         "focusable": focusable,
     }
 
-    for row_index, (color_row, image_row) in enumerate(zip(colors, images)):
-        for col_index, (color, image) in enumerate(zip(color_row, image_row)):
+    for row_index, color_row in enumerate(colors):
+        if row_index < len(images):
+            image_row = images[row_index]
+        else:
+            image_row = ["" for _ in color_row]
+
+        for col_index, color in enumerate(color_row):
+            if col_index < len(image_row):
+                image = image_row[col_index]
+            else:
+                image = ""
+
             if image:
                 # we have an image
                 output_file = Image.open(join(src_value, image))
