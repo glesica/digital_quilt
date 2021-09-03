@@ -26,7 +26,21 @@ def load_image_table(in_file: TextIO) -> List[List[Optional[str]]]:
     quilt that should only contain a color.
     """
     table_reader = reader(in_file)
-    return [row for row in table_reader]
+    
+    def parse_name(n):
+        if n == "":
+            return n
+
+        parts = n.split(".")
+        
+        if parts[-1].lower() != "jpg":
+            # Missing or wrong extension, attempt to add it, will fail later if
+            # the file is missing
+            parts.append("jpg")
+
+        return ".".join(parts)
+
+    return [[parse_name(n) for n in row] for row in table_reader]
 
 
 def load_weight_table(in_file: TextIO) -> List[List[int]]:
