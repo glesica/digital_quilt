@@ -35,6 +35,6 @@ serve:
 
 .PHONY: setup
 setup:
-	cd digital_quilt && pipenv install
+	cd digital_quilt && pipenv sync
 	cd web_app && npm install
 
