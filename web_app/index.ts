@@ -30,7 +30,7 @@ async function loadQuilt() {
 
     quilt.layoutAll();
 
-    new AutoSelector(quilt, {delay: 4000});
+    new AutoSelector(quilt, {delay: 12000});
 }
 
 loadQuilt().then(_ => {
